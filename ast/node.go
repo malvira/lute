@@ -919,5 +919,8 @@ const (
 	NodeFileAnnotationRefSpace NodeType = 542 // 被引用的文件注解 ID 和文件注解引用锚文本之间的空格
 	NodeFileAnnotationRefText  NodeType = 543 // 文件注解引用锚文本（不能为空，如果为空的话会自动使用 ID 渲染）
 
+	// wikilink
+	NodeWikilink               NodeType = 544
+	
 	NodeTypeMaxVal NodeType = 1024 // 节点类型最大值
 )

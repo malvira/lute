@@ -153,6 +153,37 @@ func (t *Tree) parseCloseBracket(ctx *InlineContext) *ast.Node {
 
 	isImage := opener.image
 
+	// check if opener.previous is also a open bracket
+	// if so, we are in a wikilink
+	// also make sure we are at a double closed bracket (ctx.pos points at the next char here)
+	// but not at the last closed bracket
+
+	// if we are at a the first closed bracket in ]]
+	// skip. The do the wikilink on the second
+	if opener.previous != nil && opener.previous.node.Tokens[0] == lex.ItemOpenBracket &&
+		ctx.pos < len(ctx.tokens) &&
+		(ctx.tokens[ctx.pos] == lex.ItemCloseBracket) {
+		return nil
+	}
+		
+	if opener.previous != nil && opener.previous.node.Tokens[0] == lex.ItemOpenBracket &&
+		(ctx.tokens[ctx.pos-1] == lex.ItemCloseBracket) {
+
+		// remove the parsed wikilink
+		reflabel := opener.node.Next.Tokens
+		opener.node.Next.Unlink()
+		// and the opening brackets
+		opener.node.Previous.Unlink()
+		opener.node.Unlink()
+
+		node := &ast.Node{Type: ast.NodeWikilink, LinkType: 0, LinkRefLabel: reflabel}
+		node.AppendChild(&ast.Node{Type: ast.NodeLinkDest, Tokens: reflabel})
+		node.AppendChild(&ast.Node{Type: ast.NodeLinkText, Tokens: reflabel})
+		
+		return node
+	}
+
+	
 	// 检查是否满足链接或者图片规则
 
 	var openParen, dest, space, title, closeParen []byte

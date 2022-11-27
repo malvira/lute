@@ -163,6 +163,7 @@ func NewHtmlRenderer(tree *parse.Tree, options *Options) *HtmlRenderer {
 	ret.RendererFuncs[ast.NodeUnderlineCloseMarker] = ret.renderUnderlineCloseMarker
 	ret.RendererFuncs[ast.NodeBr] = ret.renderBr
 	ret.RendererFuncs[ast.NodeTextMark] = ret.renderTextMark
+	ret.RendererFuncs[ast.NodeWikilink] = ret.renderLink
 	return ret
 }
 
@@ -959,6 +960,9 @@ func (r *HtmlRenderer) renderLink(node *ast.Node, entering bool) ast.WalkStatus 
 		attrs := [][]string{{"href", util.BytesToStr(html.EscapeHTML(destTokens))}}
 		if title := node.ChildByType(ast.NodeLinkTitle); nil != title && nil != title.Tokens {
 			attrs = append(attrs, []string{"title", util.BytesToStr(html.EscapeHTML(title.Tokens))})
+		}
+		if node.Type == ast.NodeWikilink {
+			attrs = append(attrs, []string{"class", "wikilink"})
 		}
 		r.Tag("a", attrs, false)
 	} else {
