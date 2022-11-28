@@ -19,9 +19,9 @@ import (
 func TestWikilink(t *testing.T) {
 	luteEngine := lute.New()
 
-	test := "[reallink](linktext) [[wikilink]]"
+	test := "[reallink](linktext) [[ref]]"
 	result := luteEngine.MarkdownStr("wikilink", test)
-	expected := "<p><a href=\"linktext\">reallink</a> <a href=\"wikilink\" class=\"wikilink\">wikilink</a></p>\n"
+	expected := "<p><a href=\"linktext\">reallink</a> <a href=\"ref\" class=\"wikilink\">ref</a></p>\n"
 
 	if result != expected {
 		t.Fatalf("\ntried\n%s\nwanted\n%q\ngot\n%q\n", test, expected, result)
