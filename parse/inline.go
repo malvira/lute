@@ -175,8 +175,9 @@ func (t *Tree) parseCloseBracket(ctx *InlineContext) *ast.Node {
 		}
 		
 		node := &ast.Node{Type: ast.NodeWikilink, LinkType: 0, LinkRefLabel: reflabel}
-		node.AppendChild(&ast.Node{Type: ast.NodeLinkDest, Tokens: reflabel})
-		node.AppendChild(&ast.Node{Type: ast.NodeLinkText, Tokens: reflabel})
+		node.AppendChild(&ast.Node{Type: ast.NodeText, Tokens: reflabel})
+		//		node.AppendChild(&ast.Node{Type: ast.NodeLinkDest, Tokens: reflabel})
+//		node.AppendChild(&ast.Node{Type: ast.NodeLinkText, Tokens: reflabel})
 		
 		return node
 	}

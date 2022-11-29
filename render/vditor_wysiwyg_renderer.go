@@ -129,6 +129,7 @@ func NewVditorRenderer(tree *parse.Tree, options *Options) *VditorRenderer {
 	ret.RendererFuncs[ast.NodeKramdownBlockIAL] = ret.renderKramdownBlockIAL
 	ret.RendererFuncs[ast.NodeLinkRefDefBlock] = ret.renderLinkRefDefBlock
 	ret.RendererFuncs[ast.NodeLinkRefDef] = ret.renderLinkRefDef
+	ret.RendererFuncs[ast.NodeWikilink] = ret.renderLink
 	return ret
 }
 
@@ -767,6 +768,9 @@ func (r *VditorRenderer) renderLink(node *ast.Node, entering bool) ast.WalkStatu
 		if title := node.ChildByType(ast.NodeLinkTitle); nil != title && nil != title.Tokens {
 			title.Tokens = bytes.ReplaceAll(title.Tokens, editor.CaretTokens, nil)
 			attrs = append(attrs, []string{"title", string(title.Tokens)})
+		}
+		if node.Type == ast.NodeWikilink {
+			attrs = append(attrs, []string{"class", "wikilink"})
 		}
 		r.Tag("a", attrs, false)
 	} else {

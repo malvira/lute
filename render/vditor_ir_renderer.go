@@ -126,6 +126,7 @@ func NewVditorIRRenderer(tree *parse.Tree, options *Options) *VditorIRRenderer {
 	ret.RendererFuncs[ast.NodeKramdownBlockIAL] = ret.renderKramdownBlockIAL
 	ret.RendererFuncs[ast.NodeLinkRefDefBlock] = ret.renderLinkRefDefBlock
 	ret.RendererFuncs[ast.NodeLinkRefDef] = ret.renderLinkRefDef
+	ret.RendererFuncs[ast.NodeWikilink] = ret.renderWikilink
 	return ret
 }
 
@@ -1199,6 +1200,30 @@ func (r *VditorIRRenderer) renderStrong(node *ast.Node, entering bool) ast.WalkS
 	return ast.WalkContinue
 }
 
+func (r *VditorIRRenderer) renderWikilink(node *ast.Node, entering bool) ast.WalkStatus {
+	if entering {
+		r.renderSpanNode(node)
+		
+		r.Tag("span", [][]string{{"class", "vditor-ir__marker vditor-ir__marker--bi"}}, false)
+		r.WriteString("[[")
+		r.Tag("/span", nil, false)
+		r.Tag("span", [][]string{{"class", "vditor-ir__link"}}, false)
+		
+		
+	} else {
+
+		r.Tag("/span", nil, false)
+		r.Tag("span", [][]string{{"class", "vditor-ir__marker vditor-ir__marker--bi"}}, false)
+		r.WriteString("]]")
+		r.Tag("/span", nil, false)
+
+		r.Tag("/span", nil, false)
+		
+	}
+	return ast.WalkContinue
+}
+
+
 func (r *VditorIRRenderer) renderStrongA6kOpenMarker(node *ast.Node, entering bool) ast.WalkStatus {
 	if entering {
 		r.Tag("span", [][]string{{"class", "vditor-ir__marker vditor-ir__marker--bi"}}, false)
@@ -1438,6 +1463,8 @@ func (r *VditorIRRenderer) renderSpanNode(node *ast.Node) {
 		} else {
 			attrs = append(attrs, []string{"data-type", "link-ref"})
 		}
+	case ast.NodeWikilink:
+		attrs = append(attrs, []string{"data-type", "a"})
 	case ast.NodeImage:
 		attrs = append(attrs, []string{"data-type", "img"})
 	case ast.NodeCodeSpan:

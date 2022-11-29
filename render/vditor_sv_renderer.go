@@ -164,6 +164,8 @@ func NewVditorSVRenderer(tree *parse.Tree, options *Options) *VditorSVRenderer {
 	ret.RendererFuncs[ast.NodeKramdownBlockIAL] = ret.renderKramdownBlockIAL
 	ret.RendererFuncs[ast.NodeLinkRefDefBlock] = ret.renderLinkRefDefBlock
 	ret.RendererFuncs[ast.NodeLinkRefDef] = ret.renderLinkRefDef
+	ret.RendererFuncs[ast.NodeWikilink] = ret.renderLink
+	
 	return ret
 }
 
